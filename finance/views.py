@@ -102,7 +102,7 @@ def debt_add(request, module):
         debt = form.save(commit=False)
         debt.user = request.user
         debt.save()
-        return redirect('expense:debt_info', pk=debt.pk, module=module)
+        return redirect('finance:debt_info', pk=debt.pk, module=module)
 
     context['form'] = form
     context['module'] = module
