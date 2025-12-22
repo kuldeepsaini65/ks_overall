@@ -41,6 +41,7 @@
           <tr>
             <th>Date</th>
             <th>Category</th>
+            <th>Debt</th>
             <th>Amount</th>
             <th>Payment</th>
             <th>Note</th>
@@ -57,6 +58,8 @@
                 {{ e.category|default:"—" }}
               </span>
             </td>
+            <td class="fw-semibold text-info"> {{ e.debt|default:'-' }}</td>
+
             <td class="fw-semibold text-danger">₹ {{ e.amount }}</td>
             <td class="text-capitalize">{{ e.payment_mode }}</td>
             <td class="text-muted small">

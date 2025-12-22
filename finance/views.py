@@ -225,7 +225,11 @@ def expense_update(request, module, pk):
 
     if form.is_valid():
         form.save()
-        return redirect('finance:list', module=module)
+        return redirect('finance:exp_list', module=module)
+    elif form.errors:
+        print(form.errors.as_data())
+        messages.error(request, form.errors.as_text())
+        return redirect('finance:exp_edit', module=module, pk=pk)
 
     context['module'] = module
     context['form'] = form
@@ -242,5 +246,5 @@ def expense_delete(request, module, pk):
 
     context['module'] = module
 
-    return redirect('finance:list', module = module)
+    return redirect('finance:exp_list', module = module)
 

@@ -1,19 +1,41 @@
 from django import forms
 from .models import Expense, ExpenseCategory, Debt
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 
 
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = ExpenseCategory
-        fields = ['name']
+        fields = ['name', 'slug']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'slug': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Auto-generated if left blank'
+            }),
+        }
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control'})
 
-    
+    def clean_slug(self):
+        slug = self.cleaned_data.get('slug')
+        name = self.cleaned_data.get('name')
+
+        # Auto-generate slug if not provided
+        if not slug and name:
+            slug = slugify(name)
+
+        # Ensure slug uniqueness
+        if ExpenseCategory.objects.filter(slug=slug).exclude(
+            pk=self.instance.pk
+        ).exists():
+            raise ValidationError("Category with this slug already exists.")
+
+        return slug
 
 
 
@@ -97,6 +119,10 @@ class ExpenseForm(forms.ModelForm):
             'expense_date': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'category' : forms.Select(attrs={'class':'form-control'}),
             'payment_mode' : forms.Select(attrs={'class':'form-control'}),
+             
+            'debt': forms.Select(attrs={
+                'class': 'form-control',
+            }),
             'amount': forms.NumberInput(attrs={'class': 'form-control',
                 'placeholder': 'Enter amount',
                 'step': '0.01',

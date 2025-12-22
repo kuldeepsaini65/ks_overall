@@ -57,6 +57,24 @@
     justify-content: center;
     color: white;
   }
+
+
+
+  /* Slide animations for alerts */
+.slide-alert {
+  transform: translateX(120%);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.slide-alert.show {
+  transform: translateX(0);
+}
+
+.slide-alert.hide {
+  transform: translateX(120%);
+}
+
 </style>
 
 
@@ -103,6 +121,35 @@
   </aside>
 
   <!-- Main Content -->
+      {% if messages %}
+      <div class="position-fixed top-0 end-0 p-4" style="z-index:1055;">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible glass shadow-sm slide-alert"
+              role="alert"
+              style="min-width:320px;">
+            
+            {% if message.tags == 'success' %}
+              <i class="bi bi-check-circle-fill me-2 text-success"></i>
+            {% elif message.tags == 'error' %}
+              <i class="bi bi-x-circle-fill me-2 text-danger"></i>
+            {% elif message.tags == 'warning' %}
+              <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>
+            {% else %}
+              <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+            {% endif %}
+
+            <span class="fw-semibold">{{ message }}</span>
+
+            <button type="button"
+                    class="btn-close"
+                    onclick="closeSlideAlert(this)">
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+
   {% block content %}
   
   {% endblock content %}
@@ -115,5 +162,38 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".slide-alert").forEach((alert, index) => {
+      // Small stagger for premium feel
+      setTimeout(() => {
+        alert.classList.add("show");
+      }, index * 120);
+
+      // Auto close after 4 seconds
+      setTimeout(() => {
+        closeAlert(alert);
+      }, 6000 + index * 120);
+    });
+  });
+
+  function closeSlideAlert(btn) {
+    const alert = btn.closest('.slide-alert');
+    closeAlert(alert);
+  }
+
+  function closeAlert(alert) {
+    alert.classList.remove("show");
+    alert.classList.add("hide");
+
+    // Remove from DOM after animation
+    setTimeout(() => {
+      alert.remove();
+    }, 600);
+  }
+</script>
+
+
 </body>
 </html>

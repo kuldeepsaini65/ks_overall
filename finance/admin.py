@@ -4,7 +4,7 @@ from .models import *
 
 @admin.register(ExpenseCategory)
 class ExpenseCategoryList(admin.ModelAdmin):
-    list_display = ['name', 'user']
+    list_display = ['name','slug', 'user']
 
 
 

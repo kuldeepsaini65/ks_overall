@@ -41,4 +41,7 @@ def user_logout(request):
 def dashboard(request):
     context = {}
     messages.success(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
+    messages.error(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
+    messages.warning(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
+    messages.info(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
     return render(request, 'index/dashboard.html', context=context)

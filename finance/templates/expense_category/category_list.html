@@ -25,6 +25,7 @@
         <thead class="table-light">
           <tr>
             <th>Name</th>
+            <th>Tag</th>
           </tr>
         </thead>
 
@@ -32,6 +33,7 @@
           {% for e in data %}
           <tr>
             <td>{{ e.name|capfirst }}</td>
+            <td>{{ e.slug }}</td>
             
           </tr>
           {% empty %}
