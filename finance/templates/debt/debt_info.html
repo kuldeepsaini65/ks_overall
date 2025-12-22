@@ -1,46 +1,88 @@
 {% extends "dashboard.html" %}
+{% load humanize %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h4>{{ debt.name }}</h4>
+<main class="flex-fill p-3 p-md-4">
 
-  <div>
-    {% if debt %}
-     <a href="{% url 'finance:debt_edit' pk=debt.id module=module%}" class="btn btn-warning btn-sm">
-      Edit
-    </a>
-    <a href="{% url 'finance:debt_delete' module=module pk=debt.id %}" class="btn btn-danger btn-sm">
-      Delete
-    </a>
-    {% endif %}
-   
-  </div>
-</div>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">{{ debt.name }}</h4>
 
-<div class="glass p-4">
-
-  <div class="row">
-    <div class="col-md-6">
-      <p><strong>Type:</strong> {{ debt.get_debt_type_display }}</p>
-      <p><strong>Lender:</strong> {{ debt.lender|default:"—" }}</p>
-      <p><strong>Principal:</strong> ₹{{ debt.principal_amount }}</p>
-      <p><strong>EMI:</strong> ₹{{ debt.emi_amount }}</p>
-    </div>
-
-    <div class="col-md-6">
-      <p><strong>Total Paid:</strong> ₹{{ debt.total_paid }}</p>
-      <p><strong>Remaining:</strong> ₹{{ debt.remaining_amount }}</p>
-      <p><strong>EMIs Left:</strong> {{ debt.emi_left }}</p>
-      <p><strong>Status:</strong>
-        {% if debt.is_active %}
-          <span class="badge bg-success">Active</span>
-        {% else %}
-          <span class="badge bg-secondary">Closed</span>
-        {% endif %}
-      </p>
+    <div class="d-flex gap-2">
+      <a href="{% url 'finance:debt_edit' pk=debt.id module=module %}"
+         class="btn btn-warning btn-sm">
+        Edit
+      </a>
+      <a href="{% url 'finance:debt_delete' module=module pk=debt.id %}"
+         class="btn btn-danger btn-sm">
+        Delete
+      </a>
     </div>
   </div>
 
-</div>
+  <!-- Info Card -->
+  <div class="glass p-4" style="max-width: 900px;">
+
+    <div class="row g-4">
+
+      <!-- Left Column -->
+      <div class="col-md-6">
+        <p class="mb-2">
+          <span class="text-muted">Type</span><br>
+          <strong>{{ debt.get_debt_type_display }}</strong>
+        </p>
+
+        <p class="mb-2">
+          <span class="text-muted">Lender</span><br>
+          <strong>{{ debt.lender|default:"—" }}</strong>
+        </p>
+
+        <p class="mb-2">
+          <span class="text-muted">Principal Amount</span><br>
+          <strong>₹ {{ debt.principal_amount|intcomma }}</strong>
+        </p>
+
+        <p class="mb-0">
+          <span class="text-muted">EMI Amount</span><br>
+          <strong>₹ {{ debt.emi_amount|intcomma }}</strong>
+        </p>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-6">
+        <p class="mb-2">
+          <span class="text-muted">Total Paid</span><br>
+          <strong class="text-success">
+            ₹ {{ debt.total_paid|intcomma }}
+          </strong>
+        </p>
+
+        <p class="mb-2">
+          <span class="text-muted">Remaining Amount</span><br>
+          <strong class="text-danger">
+            ₹ {{ debt.remaining_amount|intcomma }}
+          </strong>
+        </p>
+
+        <p class="mb-2">
+          <span class="text-muted">EMIs Left</span><br>
+          <strong>{{ debt.emi_left }}</strong>
+        </p>
+
+        <p class="mb-0">
+          <span class="text-muted">Status</span><br>
+          {% if debt.is_active %}
+            <span class="badge bg-success">Active</span>
+          {% else %}
+            <span class="badge bg-secondary">Closed</span>
+          {% endif %}
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
 
 {% endblock %}
