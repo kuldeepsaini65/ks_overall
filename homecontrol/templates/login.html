@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Glossy Login / Signup — Tailwind</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom CSS for glossy effects, micro-interactions & animations */
+
+    /* Animated gradient background */
+    :root{--bg1:#0f172a;--bg2:#0b1220}
+    body{background:linear-gradient(120deg,var(--bg1),var(--bg2));}
+    .animated-bg{
+      position:fixed;inset:0;z-index:-1;opacity:0.6;pointer-events:none;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(99,102,241,0.18), rgba(56,189,248,0.18), rgba(236,72,153,0.14), rgba(59,130,246,0.12));
+      filter: blur(60px);
+      animation: float 12s linear infinite;
+      mix-blend-mode: screen;
+    }
+    @keyframes float {
+      0%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-20px) rotate(180deg);}100%{transform:translateY(0) rotate(360deg);} 
+    }
+
+    /* Glossy card */
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px) saturate(120%);
+      -webkit-backdrop-filter: blur(8px) saturate(120%);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    /* Shiny highlight line */
+    .glossy::after{
+      content: "";position:absolute;inset:0;border-radius:18px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+      mix-blend-mode: overlay;pointer-events:none;
+    }
+
+    /* Floating logo badge */
+    .badge {
+      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: .55rem .75rem; border-radius: .75rem;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+    }
+
+    /* Inputs */
+    input[type="text"], input[type="email"], input[type="password"]{
+      transition: box-shadow .2s ease, transform .12s ease, border-color .12s ease;
+    }
+    input:focus{
+      outline: none;transform:translateY(-2px);
+      box-shadow: 0 6px 18px rgba(99,102,241,0.15);
+      border-color: rgba(99,102,241,0.6);
+    }
+
+    /* Submit btn glassy */
+    .btn-gloss{
+      background: linear-gradient(90deg,#6366f1,#06b6d4);
+      color: white;padding:.7rem 1.05rem;border-radius:12px;font-weight:600;
+      box-shadow: 0 8px 30px rgba(6,11,32,0.6), 0 2px 6px rgba(99,102,241,0.12) inset;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-gloss:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(6,11,32,0.7);}
+
+    /* Small animated accent dots */
+    .dot{width:8px;height:8px;border-radius:9999px;opacity:.9}
+    .fade-in{animation:appear .6s cubic-bezier(.2,.9,.3,1) both}
+    @keyframes appear{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* Toggle forms */
+    .panel{transition:all .6s cubic-bezier(.2,.9,.3,1)}
+
+    /* Responsive tweaks */
+    @media (max-width:640px){.glass{border-radius:14px}}
+  </style>
+</head>
+<body class="antialiased text-slate-100 leading-relaxed">
+
+  <!-- Animated background layer -->
+  <div class="animated-bg" aria-hidden="true"></div>
+
+  <main class="min-h-screen flex items-center justify-center px-6 py-12">
+    <section class="max-w-4xl w-full grid grid-cols-12 gap-8 items-center">
+
+      <!-- Left visual: product promo, big glossy illustration -->
+      <div class="col-span-6 hidden lg:block">
+        <div class="relative p-8 glass rounded-2xl overflow-hidden" style="min-height:420px">
+          <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full" style="background:linear-gradient(135deg, rgba(99,102,241,0.22), rgba(236,72,153,0.12)); filter: blur(28px);"></div>
+          <div class="absolute -left-10 top-8 w-40 h-40 rounded-full" style="background:linear-gradient(135deg, rgba(6,182,212,0.14), rgba(99,102,241,0.12)); filter: blur(22px);"></div>
+
+          <div class="relative z-10">
+            <div class="badge inline-flex items-center gap-3 mb-6">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <rect x="3" y="3" width="18" height="18" rx="6" fill="white" fill-opacity="0.06"></rect>
+                <path d="M7 13l3 3 7-8" stroke="white" stroke-opacity="0.9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <div class="text-sm">
+                <div class="font-semibold leading-tight">Pro Portal</div>
+                <div class="text-xs text-slate-300">Secure · Smooth · Modern</div>
+              </div>
+            </div>
+
+            <h2 class="text-3xl font-extrabold mb-3">Welcome back — build things that matter</h2>
+            <p class="text-slate-300 mb-6 max-w-[36rem]">Professional login and signup experience with glossy glassmorphism, subtle motion, and tactile micro-interactions designed for high-conversion products.</p>
+
+            <div class="mt-6 grid grid-cols-3 gap-3">
+              <div class="p-4 rounded-xl glass flex items-start gap-3">
+                <div class="dot bg-indigo-400 mt-1"></div>
+                <div>
+                  <div class="font-semibold">Fast</div>
+                  <div class="text-sm text-slate-300">Lightning quick interactions</div>
+                </div>
+              </div>
+              <div class="p-4 rounded-xl glass flex items-start gap-3">
+                <div class="dot bg-cyan-400 mt-1"></div>
+                <div>
+                  <div class="font-semibold">Secure</div>
+                  <div class="text-sm text-slate-300">Built-in security best practices</div>
+                </div>
+              </div>
+              <div class="p-4 rounded-xl glass flex items-start gap-3">
+                <div class="dot bg-pink-400 mt-1"></div>
+                <div>
+                  <div class="font-semibold">Polished</div>
+                  <div class="text-sm text-slate-300">Pixel-perfect UI & animations</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: form card -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="glass glossy relative p-8 rounded-2xl shadow-xl">
+
+          <!-- Header with toggle -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-2xl font-bold">Sign in to your account</h3>
+              <p class="text-sm text-slate-300">Enter your credentials to access your dashboard</p>
+            </div>
+            {% comment %} <div class="text-sm text-slate-300">New here? <button id="toggleForm" class="ml-2 font-semibold text-indigo-300 hover:underline">Create account</button></div> {% endcomment %}
+          </div>
+
+          <div id="formWrap" class="panel">
+            <!-- Sign in form -->
+            <form id="signin" class="space-y-4" method="POST" action="{% url 'homecontrol:login' %}">
+              {% csrf_token %}
+              <label class="block">
+                <span class="text-sm text-slate-300">Username</span>
+                <input type="text" required name='username' placeholder="tmaxsaini43" class="mt-2 w-full rounded-xl p-3 bg-transparent border border-transparent focus:border-indigo-400" />
+              </label>
+              <label class="block">
+                <span class="text-sm text-slate-300">Password</span>
+                <input type="password" required name='password' placeholder="••••••••" class="mt-2 w-full rounded-xl p-3 bg-transparent border border-transparent focus:border-indigo-400" />
+              </label>
+
+              <div class="flex items-center justify-between text-sm">
+                <label class="inline-flex items-center gap-2 text-slate-300"><input type="checkbox" class="rounded" /> Remember me</label>
+                <a href="#" class="text-indigo-200 hover:underline">Forgot password?</a>
+              </div>
+
+              <div class="pt-2">
+                <button type="submit" class="w-full btn-gloss">Sign in</button>
+              </div>
+
+              <div class="flex items-center gap-3 mt-4 text-slate-400 text-sm justify-center">
+                <span>Or continue with</span>
+                <button aria-label="Sign in with Google" class="p-2 rounded-lg glass"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21.35 11.1H12v2.8h5.4c-.25 1.4-1.1 2.6-2.35 3.4v2.8h3.8C20.6 19.3 22 15.6 22 12c0-.7-.05-1.35-.15-1.9z" fill="white" fill-opacity="0.85"></path></svg></button>
+                <button aria-label="Sign in with GitHub" class="p-2 rounded-lg glass"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M12 2C6.5 2 2 6.5 2 12c0 4.4 2.9 8.1 6.9 9.4.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.2-3.4-1.2-.5-1.3-1.3-1.6-1.3-1.6-1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1 .1 1.6-.8 1.8-1.2.4-1 .9-1.3 1.6-1.6-2.2-.3-4.5-1.1-4.5-4.8 0-1.1.4-2 1.1-2.7-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1.1.9-.3 1.9-.4 2.9-.4s2 .2 2.9.4c1.9-1.4 2.8-1.1 2.8-1.1.6 1.4.2 2.4.1 2.7.7.7 1.1 1.6 1.1 2.7 0 3.7-2.3 4.5-4.5 4.8.9.8 1.6 1.9 1.6 3.9v5.8c0 .3.2.6.7.5C19.1 20.1 22 16.4 22 12c0-5.5-4.5-10-10-10z" fill="white" fill-opacity="0.85"></path></svg></button>
+              </div>
+            </form>
+
+            <!-- Signup form (hidden initially) -->
+            <form id="signup" class="space-y-4 hidden">
+              <label class="block">
+                <span class="text-sm text-slate-300">Full name</span>
+                <input type="text" required placeholder="Your name" class="mt-2 w-full rounded-xl p-3 bg-transparent border border-transparent focus:border-indigo-400" />
+              </label>
+              <label class="block">
+                <span class="text-sm text-slate-300">Email</span>
+                <input type="email" required placeholder="you@company.com" class="mt-2 w-full rounded-xl p-3 bg-transparent border border-transparent focus:border-indigo-400" />
+              </label>
+              <label class="block">
+                <span class="text-sm text-slate-300">Password</span>
+                <input type="password" required placeholder="Create a password" class="mt-2 w-full rounded-xl p-3 bg-transparent border border-transparent focus:border-indigo-400" />
+              </label>
+
+              <div class="pt-2">
+                <button type="submit" class="w-full btn-gloss">Create account</button>
+              </div>
+
+              <div class="text-center text-sm text-slate-400 mt-2">By creating an account you agree to our <a href="#" class="text-indigo-200 hover:underline">Terms</a>.</div>
+            </form>
+
+          </div>
+
+          <!-- subtle footer -->
+          <div class="mt-6 text-xs text-slate-400 text-center">© <span id="yr"></span> Pro Portal — crafted with care</div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // small interactivity: toggle forms, animation on submit
+    const toggleBtn = document.getElementById('toggleForm');
+    const signin = document.getElementById('signin');
+    const signup = document.getElementById('signup');
+    const yr = document.getElementById('yr'); yr.textContent = new Date().getFullYear();
+
+    let showing = 'signin';
+    toggleBtn.addEventListener('click', () => {
+      showing = showing === 'signin' ? 'signup' : 'signin';
+      if(showing === 'signup'){
+        signin.classList.add('hidden');
+        signup.classList.remove('hidden');
+        document.querySelector('.glass h3')?.textContent = 'Create your account';
+        toggleBtn.textContent = 'Sign in';
+      } else {
+        signup.classList.add('hidden');
+        signin.classList.remove('hidden');
+        document.querySelector('.glass h3')?.textContent = 'Sign in to your account';
+        toggleBtn.textContent = 'Create account';
+      }
+    });
+
+    // Form submit animations (demo only)
+    [signin, signup].forEach(form=>{
+      form.addEventListener('submit', e=>{
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.style.transform = 'scale(.98)';
+        btn.innerHTML = 'Processing...';
+        setTimeout(()=>{btn.innerHTML = 'Done ✓'; btn.style.transform = 'translateY(-4px)';},900);
+        setTimeout(()=>{btn.disabled=false; btn.innerHTML = form.id==='signin'?'Sign in':'Create account'; btn.style.transform='';},1800);
+      })
+    })
+
+  </script>
+</body>
+</html>

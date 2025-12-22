@@ -1,0 +1,148 @@
+{% extends "dashboard.html" %}
+{% load mathfilters %}
+
+{% block title %} Debts | EverMix Tech {% endblock title %}
+
+{% block content %}
+<main class="flex-fill p-4">
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold mb-0">📄 Debts</h3>
+
+    <a href="{% url 'finance:debt_add' module=module %}"
+       class="btn btn-primary rounded-pill px-4">
+      <i class="bi bi-plus-circle me-1"></i> Add Debt
+    </a>
+  </div>
+
+  <!-- Metrics -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+      <div class="glass p-4 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1">Total Debt</p>
+            <h3 class="mb-0">₹ {{ total_debt }}</h3>
+          </div>
+          <div class="icon-circle bg-warning">
+            <i class="bi bi-bank"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="glass p-4 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1">Total Paid</p>
+            <h3 class="mb-0 text-success">₹ {{ total_paid }}</h3>
+          </div>
+          <div class="icon-circle bg-success">
+            <i class="bi bi-check-circle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="glass p-4 metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-muted mb-1">Remaining</p>
+            <h3 class="mb-0 text-danger">₹ {{ total_remaining }}</h3>
+          </div>
+          <div class="icon-circle bg-danger">
+            <i class="bi bi-arrow-down-circle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Debt Table -->
+  <div class="glass p-4">
+    <h5 class="fw-semibold mb-3">Debt Overview</h5>
+
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>EMI</th>
+            <th>Paid</th>
+            <th>Remaining</th>
+            <th>Status</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for d in debts %}
+          <tr>
+            <td class="fw-semibold">
+              {{ d.name }}
+            </td>
+
+            <td>
+              <span class="badge bg-light text-dark border">
+                {{ d.get_debt_type_display }}
+              </span>
+            </td>
+
+            <td>₹ {{ d.emi_amount }}</td>
+
+            <td class="text-success fw-semibold">
+              ₹ {{ d.amount_already_paid }}
+            </td>
+
+            <td class="text-danger fw-semibold">
+              ₹ 
+              {{ d.emi_amount|mul:d.emi_left }}
+            </td>
+
+            <td>
+              {% if d.is_active %}
+                <span class="badge bg-success">Active</span>
+              {% else %}
+                <span class="badge bg-secondary">Closed</span>
+              {% endif %}
+            </td>
+
+            <td class="text-end">
+              <a href="{% url 'finance:debt_info' pk=d.id module=module %}"
+                 class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye"></i>
+              </a>
+
+              <a href="{% url 'finance:debt_edit' pk=d.id module=module %}"
+                 class="btn btn-sm btn-outline-warning">
+                <i class="bi bi-pencil"></i>
+              </a>
+
+              <a href="{% url 'finance:debt_delete' pk=d.id module=module %}"
+                 class="btn btn-sm btn-outline-danger"
+                 onclick="return confirm('Delete this debt?')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+              No debts added yet
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+{% endblock content %}

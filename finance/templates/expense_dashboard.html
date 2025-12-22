@@ -1,0 +1,143 @@
+{% extends "dashboard.html" %}
+
+{% block title %} Expense Dashboard | EverMix Tech {% endblock title %}
+
+{% block content %}
+<main class="flex-fill p-3 p-md-4">
+
+  <!-- Header -->
+  <div class="mb-4">
+    <h3 class="fw-bold mb-1">📊 Expense Dashboard</h3>
+    <p class="text-muted mb-0">Overview of your spending</p>
+  </div>
+
+  <!-- Quick Actions -->
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-md-3">
+    <a href="{% url 'finance:category_list' module=module %}"
+       class="glass p-3 d-flex align-items-center gap-3 text-decoration-none">
+      <div class="icon-circle bg-success">
+        <i class="bi bi-tags"></i>
+      </div>
+      <div>
+        <div class="fw-semibold text-dark">Add Category</div>
+        <small class="text-muted">Expense type</small>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <a href="{% url 'finance:exp_add' module=module %}"
+       class="glass p-3 d-flex align-items-center gap-3 text-decoration-none">
+      <div class="icon-circle bg-primary">
+        <i class="bi bi-plus-circle"></i>
+      </div>
+      <div>
+        <div class="fw-semibold text-dark">Add Expense</div>
+        <small class="text-muted">New spending</small>
+      </div>
+    </a>
+  </div>
+
+  
+
+  <div class="col-6 col-md-3">
+    <a href="#"
+       class="glass p-3 d-flex align-items-center gap-3 text-decoration-none">
+      <div class="icon-circle bg-warning">
+        <i class="bi bi-credit-card"></i>
+      </div>
+      <div>
+        <div class="fw-semibold text-dark">Add Loan</div>
+        <small class="text-muted">Borrowed money</small>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <a href="#"
+       class="glass p-3 d-flex align-items-center gap-3 text-decoration-none">
+      <div class="icon-circle bg-info">
+        <i class="bi bi-cash"></i>
+      </div>
+      <div>
+        <div class="fw-semibold text-dark">Add Income</div>
+        <small class="text-muted">Money received</small>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+
+  <!-- Metrics -->
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <div class="glass p-4">
+        <p class="text-muted mb-1">This Month</p>
+        <h3 class="fw-bold text-danger mb-0">₹ {{ month_total }}</h3>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="glass p-4">
+        <p class="text-muted mb-1">Today</p>
+        <h3 class="fw-bold text-warning mb-0">₹ {{ today_total }}</h3>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="glass p-4">
+        <p class="text-muted mb-1">Total Entries</p>
+        <h3 class="fw-bold mb-0">{{ expense_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Row -->
+  <div class="row g-4">
+
+    <!-- Category Summary -->
+    <div class="col-12 col-lg-6">
+      <div class="glass p-4 h-100">
+        <h5 class="fw-semibold mb-3">Category Breakdown (This Month)</h5>
+
+        {% for c in category_summary %}
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span>{{ c.category__name|default:"Uncategorized" }}</span>
+            <span class="fw-semibold text-danger">₹ {{ c.total }}</span>
+          </div>
+        {% empty %}
+          <p class="text-muted mb-0">No data available</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Recent Expenses -->
+    <div class="col-12 col-lg-6">
+      <div class="glass p-4 h-100">
+        <h5 class="fw-semibold mb-3">Recent Expenses</h5>
+
+        <ul class="list-group list-group-flush">
+          {% for e in recent_expenses %}
+          <li class="list-group-item d-flex justify-content-between px-0">
+            <div>
+              <strong>{{ e.category|default:"—" }}</strong><br>
+              <small class="text-muted">{{ e.expense_date }}</small>
+            </div>
+            <span class="fw-semibold text-danger">₹ {{ e.amount }}</span>
+          </li>
+          {% empty %}
+          <li class="list-group-item px-0 text-muted">
+            No recent expenses
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+{% endblock content %}

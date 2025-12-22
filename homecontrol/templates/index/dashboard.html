@@ -1,0 +1,118 @@
+{% extends "dashboard.html" %}
+
+{%block title %} Dashboard | EverMix Tech {% endblock title%}
+
+
+{% block content %}
+ <main class="flex-grow-1 p-4">
+
+    <!-- Top Bar -->
+    <div class="glass d-flex justify-content-between align-items-center p-3 mb-4">
+      <div>
+        <h4 class="mb-0 fw-semibold">Welcome back, {{ request.user.username }}</h4>
+        <small class="text-muted">Here’s your activity overview</small>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light"><i class="bi bi-bell"></i></button>
+        <img src="https://avatars.dicebear.com/api/initials/KS.svg" width="40" class="rounded-circle">
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-3">
+        <div class="glass p-4 metric-card">
+          <div class="d-flex justify-content-between">
+            <div>
+              <small class="text-muted">Users</small>
+              <h3>3,412</h3>
+            </div>
+            <div class="icon-circle bg-primary">
+              <i class="bi bi-people"></i>
+            </div>
+          </div>
+          <small class="text-success">+6.2%</small>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="glass p-4 metric-card">
+          <div class="d-flex justify-content-between">
+            <div>
+              <small class="text-muted">Sessions</small>
+              <h3>1,124</h3>
+            </div>
+            <div class="icon-circle bg-danger">
+              <i class="bi bi-activity"></i>
+            </div>
+          </div>
+          <small class="text-danger">-1.8%</small>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="glass p-4 metric-card">
+          <div class="d-flex justify-content-between">
+            <div>
+              <small class="text-muted">Conversion</small>
+              <h3>5.6%</h3>
+            </div>
+            <div class="icon-circle bg-success">
+              <i class="bi bi-graph-up"></i>
+            </div>
+          </div>
+          <small class="text-success">+0.3%</small>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="glass p-4 metric-card">
+          <div class="d-flex justify-content-between">
+            <div>
+              <small class="text-muted">Revenue</small>
+              <h3>$24,800</h3>
+            </div>
+            <div class="icon-circle bg-warning">
+              <i class="bi bi-currency-dollar"></i>
+            </div>
+          </div>
+          <small class="text-success">+12%</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="glass p-4">
+      <h6 class="fw-semibold mb-3">Recent Transactions</h6>
+      <table class="table table-borderless align-middle">
+        <thead class="text-muted">
+          <tr>
+            <th>Date</th><th>User</th><th>Amount</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dec 10</td>
+            <td>Asha</td>
+            <td>$1200</td>
+            <td><span class="badge bg-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>Dec 9</td>
+            <td>Ravi</td>
+            <td>$320</td>
+            <td><span class="badge bg-warning">Pending</span></td>
+          </tr>
+          <tr>
+            <td>Dec 8</td>
+            <td>Maya</td>
+            <td>$80</td>
+            <td><span class="badge bg-danger">Failed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+{% endblock content %}

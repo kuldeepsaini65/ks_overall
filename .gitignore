@@ -1,0 +1,93 @@
+# ============================
+# Python
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ============================
+# Virtual Environment
+# ============================
+env/
+venv/
+ENV/
+.venv/
+.virtualenv/
+pip-wheel-metadata/
+
+# ============================
+# Django
+# ============================
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Django migrations (optional)
+# Uncomment if you want to ignore all migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# ============================
+# Environment variables
+# ============================
+.env
+.env.*
+*.env
+
+# ============================
+# Static & Media (production)
+# ============================
+static/
+mediafiles/
+
+# ============================
+# IDEs & Editors
+# ============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# ============================
+# OS files
+# ============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================
+# Test / Coverage
+# ============================
+htmlcov/
+.coverage
+.coverage.*
+.tox/
+pytest_cache/
+nosetests.xml
+coverage.xml
+
+# ============================
+# Logs
+# ============================
+*.log
+logs/
+
+# ============================
+# Node (if using frontend tools)
+# ============================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ============================
+# Docker
+# ============================
+*.pid

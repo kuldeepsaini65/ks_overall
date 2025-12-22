@@ -1,0 +1,46 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>{{ debt.name }}</h4>
+
+  <div>
+    {% if debt %}
+     <a href="{% url 'finance:debt_edit' pk=debt.id module=module%}" class="btn btn-warning btn-sm">
+      Edit
+    </a>
+    <a href="{% url 'finance:debt_delete' module=module pk=debt.id %}" class="btn btn-danger btn-sm">
+      Delete
+    </a>
+    {% endif %}
+   
+  </div>
+</div>
+
+<div class="glass p-4">
+
+  <div class="row">
+    <div class="col-md-6">
+      <p><strong>Type:</strong> {{ debt.get_debt_type_display }}</p>
+      <p><strong>Lender:</strong> {{ debt.lender|default:"—" }}</p>
+      <p><strong>Principal:</strong> ₹{{ debt.principal_amount }}</p>
+      <p><strong>EMI:</strong> ₹{{ debt.emi_amount }}</p>
+    </div>
+
+    <div class="col-md-6">
+      <p><strong>Total Paid:</strong> ₹{{ debt.total_paid }}</p>
+      <p><strong>Remaining:</strong> ₹{{ debt.remaining_amount }}</p>
+      <p><strong>EMIs Left:</strong> {{ debt.emi_left }}</p>
+      <p><strong>Status:</strong>
+        {% if debt.is_active %}
+          <span class="badge bg-success">Active</span>
+        {% else %}
+          <span class="badge bg-secondary">Closed</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
