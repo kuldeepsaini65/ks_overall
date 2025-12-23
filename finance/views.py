@@ -146,6 +146,12 @@ def debt_edit(request, module, pk):
     if form.is_valid():
         form.save()
         return redirect('finance:debt_info', pk=debt.pk, module=module)
+
+    elif form.errors:
+        messages.error(request, form.errors.as_text())
+        return redirect('finance:debt_info', pk=debt.pk, module=module)
+
+
     
     context['form'] = form
     context['module'] = module
