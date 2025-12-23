@@ -145,7 +145,7 @@ def debt_edit(request, module, pk):
 
     if form.is_valid():
         form.save()
-        return redirect('debts:debt_info', pk=debt.pk)
+        return redirect('finance:debt_info', pk=debt.pk)
     
     context['form'] = form
     context['module'] = module
@@ -166,12 +166,12 @@ def debt_delete(request, module, pk):
             request,
             "Debt cannot be deleted because EMI expenses are linked."
         )
-        return redirect('debts:debt_info', pk=debt.pk)
+        return redirect('finance:debt_info', pk=debt.pk)
 
     if request.method == "POST":
         debt.delete()
         messages.success(request, "Debt deleted successfully.")
-        return redirect('debts:debt_list')
+        return redirect('finance:debt_list')
     
     context['debt'] = debt
     context['module'] = module
