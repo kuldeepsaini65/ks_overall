@@ -145,6 +145,7 @@ def debt_edit(request, module, pk):
 
     if form.is_valid():
         form.save()
+        messages.success(request, 'Debt has been updated')
         return redirect('finance:debt_info', pk=debt.pk, module=module)
 
     elif form.errors:
