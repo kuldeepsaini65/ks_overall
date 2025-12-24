@@ -8,7 +8,7 @@ from homecontrol.models import LogFolder
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.db.models import Sum
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 class ExpenseCategory(LogFolder):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -306,7 +306,9 @@ class Debt(LogFolder):
             years
         )
 
-        return self.principal_amount + interest
+        total = self.principal_amount + interest
+
+        return total.quantize(Decimal('0.01'),rounding=ROUND_HALF_UP)
     
 
 PAYMENT_CHOICES = (
