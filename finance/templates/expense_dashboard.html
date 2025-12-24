@@ -91,7 +91,7 @@
     <div class="col-12 col-md-4">
       <div class="glass p-4">
         <p class="text-muted mb-1">Total Entries</p>
-        <h3 class="fw-bold mb-0">{{ expense_count|floatformat:2|intcomma }}</h3>
+        <h3 class="fw-bold mb-0">{{ expense_count|intcomma }}</h3>
       </div>
     </div>
   </div>
@@ -106,8 +106,8 @@
 
         {% for c in category_summary %}
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <span>{{ c.category__name|default:"Uncategorized" }}</span>
-            <span class="fw-semibold text-danger">₹ {{ c.total }}</span>
+            <span>{{ c.category__name|capfirst|default:"Uncategorized" }}</span>
+            <span class="fw-semibold text-danger">₹ {{ c.total|floatformat:2|intcomma }}</span>
           </div>
         {% empty %}
           <p class="text-muted mb-0">No data available</p>
