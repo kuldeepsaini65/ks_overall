@@ -8,7 +8,7 @@ from homecontrol.models import LogFolder
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.db.models import Sum
-
+from decimal import Decimal
 
 class ExpenseCategory(LogFolder):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -289,6 +289,7 @@ class Debt(LogFolder):
     def remaining_principal(self):
         return max(self.principal_amount - self.total_amount_paid, 0)
 
+  
     @property
     def estimated_total_payable(self):
         """
@@ -297,12 +298,14 @@ class Debt(LogFolder):
         if not self.interest_rate:
             return None
 
-        years = self.tenure_months / 12
+        years = Decimal(self.tenure_months) / Decimal('12')
+
         interest = (
             self.principal_amount *
-            (self.interest_rate / 100) *
+            (self.interest_rate / Decimal('100')) *
             years
         )
+
         return self.principal_amount + interest
     
 
