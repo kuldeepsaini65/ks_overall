@@ -125,8 +125,8 @@ def debt_list(request, module):
     debts = Debt.objects.filter(user=request.user).filter(is_deleted=False)
 
     total_debt = sum(d.principal_amount for d in debts)
-    total_paid = sum(d.total_paid for d in debts)
-    total_remaining = sum(d.remaining_amount for d in debts)
+    # total_paid = sum(d.total_paid for d in debts)
+    # total_remaining = sum(d.remaining_amount for d in debts)
 
     return render(request, 'debt/debt_list.html', {
         'debts': debts,
