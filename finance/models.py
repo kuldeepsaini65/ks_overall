@@ -288,12 +288,30 @@ class Debt(LogFolder):
     @property
     def remaining_principal(self):
         return max(self.principal_amount - self.total_amount_paid, 0)
+    
+
+    @property
+    def remaining_net_amount(self):
+        """
+        Total payable (principal + interest) minus total paid amount
+        """
+        total_payable = self.estimated_total_payable
+
+        if total_payable is None:
+            return None
+
+        remaining = total_payable - self.total_amount_paid
+
+        return max(
+            remaining.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP),
+            Decimal('0.00')
+        )
 
   
     @property
     def estimated_total_payable(self):
         """
-        Simple interest estimation (not bank-grade amortization)
+        Simple interest estimation
         """
         if not self.interest_rate:
             return None

@@ -77,6 +77,7 @@
             <th>EMI</th>
             <th>Paid</th>
             <th>Remaining</th>
+            <th>Total Debt</th>
             <th>Status</th>
             <th class="text-end">Action</th>
           </tr>
@@ -103,8 +104,13 @@
 
             <td class="text-danger fw-semibold">
               ₹ 
-              {{ d.estimated_total_payable }}
+              {{ d.remaining_net_amount|floatformat:2|intcomma  }}
               {% comment %} {{ d.emi_amount|mul:d.emi_left }} {% endcomment %}
+            </td>
+
+            <td class="text-danger fw-semibold">
+              ₹ 
+              {{ d.estimated_total_payable|floatformat:2|intcomma  }}
             </td>
 
 
