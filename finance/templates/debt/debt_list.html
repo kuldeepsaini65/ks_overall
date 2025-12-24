@@ -103,7 +103,7 @@
 
             <td class="text-danger fw-semibold">
               ₹ 
-              {{ d.remaining_principal|floatformat:2|intcomma }}
+              {{ d.estimated_total_payable|floatformat:2|intcomma }}
               {% comment %} {{ d.emi_amount|mul:d.emi_left }} {% endcomment %}
             </td>
 
