@@ -86,7 +86,7 @@
           {% for d in debts %}
           <tr>
             <td class="fw-semibold">
-              {{ d.name }}
+              {{ d.name|capfirst }}
             </td>
 
             <td>
@@ -95,23 +95,26 @@
               </span>
             </td>
 
-            <td>₹ {{ d.emi_amount }}</td>
+            <td>₹ {{ d.emi_amount|floatformat:2|intcomma }}</td>
 
             <td class="text-success fw-semibold">
-              ₹ {{ d.amount_already_paid }}
+              ₹ {{ d.total_amount_paid|floatformat:2|intcomma }}
             </td>
 
             <td class="text-danger fw-semibold">
               ₹ 
-              {{ d.emi_amount|mul:d.emi_left }}
+              {{ d.remaining_principal|floatformat:2|intcomma }}
+              {% comment %} {{ d.emi_amount|mul:d.emi_left }} {% endcomment %}
             </td>
 
+
+
             <td>
-              {% if d.is_active %}
+              {% comment %} {% if d.is_active %} {% endcomment %}
                 <span class="badge bg-success">Active</span>
-              {% else %}
+              {% comment %} {% else %}
                 <span class="badge bg-secondary">Closed</span>
-              {% endif %}
+              {% endif %} {% endcomment %}
             </td>
 
             <td class="text-end">
