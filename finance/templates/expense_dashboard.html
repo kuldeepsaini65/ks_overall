@@ -76,21 +76,21 @@
     <div class="col-12 col-md-4">
       <div class="glass p-4">
         <p class="text-muted mb-1">This Month</p>
-        <h3 class="fw-bold text-danger mb-0">₹ {{ month_total }}</h3>
+        <h3 class="fw-bold text-danger mb-0">₹ {{ month_total|floatformat:2|intcomma}}</h3>
       </div>
     </div>
 
     <div class="col-12 col-md-4">
       <div class="glass p-4">
         <p class="text-muted mb-1">Today</p>
-        <h3 class="fw-bold text-warning mb-0">₹ {{ today_total }}</h3>
+        <h3 class="fw-bold text-warning mb-0">₹ {{ today_tota|floatformat:2|intcomma }}</h3>
       </div>
     </div>
 
     <div class="col-12 col-md-4">
       <div class="glass p-4">
         <p class="text-muted mb-1">Total Entries</p>
-        <h3 class="fw-bold mb-0">{{ expense_count }}</h3>
+        <h3 class="fw-bold mb-0">{{ expense_count|floatformat:2|intcomma }}</h3>
       </div>
     </div>
   </div>
@@ -126,7 +126,7 @@
               <strong>{{ e.category|default:"—" }}</strong><br>
               <small class="text-muted">{{ e.expense_date }}</small>
             </div>
-            <span class="fw-semibold text-danger">₹ {{ e.amount }}</span>
+            <span class="fw-semibold text-danger">₹ {{ e.amount|floatformat:2|intcomma }}</span>
           </li>
           {% empty %}
           <li class="list-group-item px-0 text-muted">
