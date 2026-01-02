@@ -12,81 +12,127 @@
     <h4 class="fw-bold mb-0">{{ debt.name }}</h4>
 
     <div class="d-flex gap-2">
-      <a href="{% url 'finance:debt_edit' pk=debt.id module=module %}"
-         class="btn btn-warning btn-sm">
+      <a href="{% url 'finance:debt_edit' pk=debt.id module=module %}" class="btn btn-warning btn-sm">
         Edit
       </a>
-      <a href="{% url 'finance:debt_delete' module=module pk=debt.id %}"
-         class="btn btn-danger btn-sm">
+      <a href="{% url 'finance:debt_delete' module=module pk=debt.id %}" class="btn btn-danger btn-sm">
         Delete
       </a>
     </div>
   </div>
 
   <!-- Info Card -->
-  <div class="glass p-4" style="max-width: 900px;">
-
+  <div class="glass p-4">
     <div class="row g-4">
+      <div class="col-md-12">
+        <div class="row">
+          <div class=" col-md-3 mb-2">
+            <span class="text-muted">Type</span><br>
+            <strong>{{ debt.debt_type }}</strong>
+          </div>
 
-      <!-- Left Column -->
-      <div class="col-md-6">
-        <p class="mb-2">
-          <span class="text-muted">Type</span><br>
-          <strong>{{ debt.debt_type }}</strong>
-        </p>
+          <div class=" col-md-3 mb-2">
+            <span class="text-muted">Lender</span><br>
+            <strong>{{ debt.lender|default:"—" }}</strong>
+          </div>
 
-        <p class="mb-2">
-          <span class="text-muted">Lender</span><br>
-          <strong>{{ debt.lender|default:"—" }}</strong>
-        </p>
+          <div class=" col-md-3 mb-2">
+            <span class="text-muted">EMIs Left</span><br>
+            <strong>{{ debt.emi_left }}</strong>
+          </div>
 
-        <p class="mb-2">
-          <span class="text-muted">Principal Amount</span><br>
-          <strong>₹ {{ debt.principal_amount|intcomma }}</strong>
-        </p>
-
-        <p class="mb-0">
-          <span class="text-muted">EMI Amount</span><br>
-          <strong>₹ {{ debt.emi_amount|intcomma }}</strong>
-        </p>
+          <div class="col-md-3 mb-2">
+            <span class="text-muted">Status</span><br>
+            <span class="badge {{debt.badge_status}}">{{debt.debt_status_tag}}</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Right Column -->
-      <div class="col-md-6">
-        <p class="mb-2">
-          <span class="text-muted">Total Paid</span><br>
-          <strong class="text-success">
-            {% comment %} ₹ {{ debt.total_paid|intcomma }} {% endcomment %}
+
+
+      <div class="col-md-12">
+        <div class="row g-4">
+
+          <div class=" col-md-3 mb-2">
+            <span class="text-muted">Principal Amount</span><br>
+            <strong>₹ {{ debt.principal_amount|intcomma }}</strong>
+          </div>
+
+          <div class=" col-md-3 mb-0">
+            <span class="text-muted">EMI Amount</span><br>
+            <strong>₹ {{ debt.emi_amount|intcomma }}</strong>
+          </div>
+
+          <div class="col-md-3 mb-2">
+            <span class="text-muted">Total Paid</span><br>
+            <strong class="text-success">
+              {% comment %} ₹ {{ debt.total_paid|intcomma }} {% endcomment %}
               ₹ {{ debt.net_paid|floatformat:2|intcomma }}
+            </strong>
+          </div>
 
-          </strong>
-        </p>
+          <div class="col-md-3 mb-2">
+            <span class="text-muted">Remaining Amount</span><br>
+            <strong class="text-danger">
+              ₹ {{ debt.net_remaining|floatformat:2|intcomma }}
+            </strong>
+          </div>
 
-        <p class="mb-2">
-          <span class="text-muted">Remaining Amount</span><br>
-          <strong class="text-danger">
-            ₹ 
-              {{ debt.net_remaining|floatformat:2|intcomma  }}
 
-          </strong>
-        </p>
+        </div>
 
-        <p class="mb-2">
-          <span class="text-muted">EMIs Left</span><br>
-          <strong>{{ debt.emi_left }}</strong>
-        </p>
-
-        <p class="mb-0">
-          <span class="text-muted">Status</span><br>
-         
-          <span class="badge {{debt.badge_status}}">{{debt.debt_status_tag}}</span>
-          
-        </p>
       </div>
 
     </div>
-
   </div>
+
+
+  <div class="glass p-4 my-2">
+    <h5 class="fw-semibold mb-3">{{ debt.name }} Payment History</h5>
+    <div class="table-responsive">
+      <table class="table align-middle" id="expense_table">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Payment Mode</th>
+            <th>Note</th>
+            <th class="text-end">Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+          {% for payments in debt_payments %}
+          <tr>
+            <td>{{ payments.expense_date }}</td>
+            <td class="fw-semibold text-danger">₹ {{ payments.amount }}</td>
+            <td class="text-capitalize">{{ payments.payment_mode }}</td>
+            <td class="text-muted small">
+              {{ payments.note|default:"—"|truncatechars:30 }}
+            </td>
+            <td class="text-end">
+              <a href="{% url 'finance:exp_edit' pk=payments.id module=module%}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <a href="{% url 'finance:exp_delete' pk=payments.id module=module %}"
+                 class="btn btn-sm btn-outline-danger"
+                 onclick="return confirm('Delete this expense?')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="auto">No Payments </td>
+          </tr>
+          
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 
 </main>
 

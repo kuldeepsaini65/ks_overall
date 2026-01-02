@@ -129,7 +129,10 @@ def debt_info(request, module, pk):
 
     debt = get_object_or_404(Debt, pk=pk, user=request.user)
 
+    debt_payments = Expense.objects.filter(debt__id = pk).filter(user = request.user)
+
     context['debt'] = debt
+    context['debt_payments'] = debt_payments
     context['module'] = module
 
     return render(request, 'debt/debt_info.html', context)
