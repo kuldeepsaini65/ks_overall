@@ -177,14 +177,14 @@ class Debt(LogFolder):
         expense_emi = self.expense_debt.filter(category__slug='debt').count()
         total_paid_emi = opening_emi + expense_emi
         if total_paid_emi < self.tenure_months:
-            tag = 'Closed'
-        elif total_paid_emi >= self.tenure_months:
             tag = 'Active'
+        elif total_paid_emi >= self.tenure_months:
+            tag = 'Closed'
         return tag
     
     @property
     def badge_status(self):
-        return 'bg-warning p-2' if self.debt_status_tag == 'active' else 'bg-success p-2'
+        return 'bg-warning p-2' if self.debt_status_tag == 'Active' else 'bg-success p-2'
 
     
     @property
