@@ -12,6 +12,7 @@ from homecontrol.utils import _add_validation_messages, _add_form_error_messages
 from datetime import date
 import calendar
 
+
 @login_required(login_url='homecontrol:login')
 def expense_dashboard(request, module):
     today = now().date()
@@ -61,12 +62,15 @@ def expense_dashboard(request, module):
 # Category
 @login_required(login_url='homecontrol:login')
 def category_create(request, module):
+    if not request.user.is_superuser:
+        messages.warning(request, 'Permission denided !!')
+        return redirect('finance:category_list', module = module)
+    
     context = {}
     form = CategoryForm(request.POST or None)
     if form.is_valid():
         category = form.save(commit=False)
         category.user = request.user
-        # category.save()
         try:
             category.save()
             return redirect('finance:category_list', module=module)
@@ -83,6 +87,7 @@ def category_create(request, module):
 
 @login_required(login_url='homecontrol:login')
 def category_list(request, module):
+    
     context = {}
     data = ExpenseCategory.objects.filter(Q(user=request.user) | Q(user__is_superuser=True)
     ).filter(is_deleted = False)
@@ -146,7 +151,7 @@ def debt_list(request, module):
 
 
     # total Paid
-    total_paid = Expense.objects.filter(category__name__iexact = 'Debt').aggregate(total_amount_paid = Sum('amount'))
+    total_paid = Expense.objects.filter(user=request.user).filter(category__name__iexact = 'Debt').aggregate(total_amount_paid = Sum('amount'))
     print(total_paid)
     # total_debt = sum(d.principal_amount for d in debts)
 
@@ -280,6 +285,7 @@ def expense_update(request, module, pk):
     form = ExpenseForm(request.POST or None, instance=expense, user=request.user)
 
     if form.is_valid():
+        form.instance.user = request.user
         form.save()
         return redirect('finance:exp_list', module=module)
     elif form.errors:
