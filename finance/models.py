@@ -184,7 +184,7 @@ class Debt(LogFolder):
     
     @property
     def badge_status(self):
-        return 'bg-success p-2' if self.debt_status_tag == 'active' else 'bg-success p-2'
+        return 'bg-warning p-2' if self.debt_status_tag == 'active' else 'bg-success p-2'
 
     
     @property

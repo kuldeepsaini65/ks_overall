@@ -120,7 +120,7 @@
 
             <td>
               {% comment %} {% if d.is_active %} {% endcomment %}
-                <span class="badge bg-success">Active</span>
+                <span class="badge {{d.debt_status_tag}}">{{d.debt_status_tag}}</span>
               {% comment %} {% else %}
                 <span class="badge bg-secondary">Closed</span>
               {% endif %} {% endcomment %}
