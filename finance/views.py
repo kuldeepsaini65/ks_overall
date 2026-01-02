@@ -8,6 +8,7 @@ from django.utils.timezone import now
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from homecontrol.utils import _add_validation_messages, _add_form_error_messages
 
 @login_required(login_url='homecontrol:login')
 def expense_dashboard(request, module):
@@ -36,8 +37,6 @@ def expense_dashboard(request, module):
         .annotate(total=Sum('amount'))
         .order_by('-total')
     )
-
-
 
     # Recent expenses
     recent_expenses = qs.order_by('-expense_date', '-id')[:5]
@@ -92,23 +91,35 @@ def category_list(request, module):
 
 
 
-# Debt/Loan
 @login_required
 def debt_add(request, module):
-    context = {}
     form = DebtForm(request.POST or None)
 
-    if form.is_valid():
-        debt = form.save(commit=False)
-        debt.user = request.user
-        debt.save()
-        return redirect('finance:debt_info', pk=debt.pk, module=module)
+    if request.method == "POST":
 
-    context['form'] = form
-    context['module'] = module
+        if form.is_valid():
+            debt = form.save(commit=False)
+            debt.user = request.user
 
-    return render(request, 'debt/debt_form.html', context)
+            try:
+                debt.save()
+                messages.success(request, "Debt added successfully.")
+                return redirect('finance:debt_info', pk=debt.pk, module=module)
 
+            except ValidationError as e:
+                _add_validation_messages(request, e)
+
+        else:
+            _add_form_error_messages(request, form)
+
+    return render(
+        request,
+        'debt/debt_form.html',
+        {
+            'form': form,
+            'module': module
+        }
+    )
 
 @login_required
 def debt_info(request, module, pk):
@@ -125,12 +136,21 @@ def debt_list(request, module):
     debts = Debt.objects.filter(user=request.user).filter(is_deleted=False)
 
     total_debt = sum(d.principal_amount for d in debts)
-    # total_paid = sum(d.total_paid for d in debts)
-    # total_remaining = sum(d.remaining_amount for d in debts)
+    total_interest = sum(d.total_interest for d in debts)
+    gross_amount = total_debt + total_interest
+
+
+    # total Paid
+    total_paid = Expense.objects.filter(category__name__iexact = 'Debt').aggregate(total_amount_paid = Sum('amount'))
+    print(total_paid)
+    # total_debt = sum(d.principal_amount for d in debts)
+
 
     return render(request, 'debt/debt_list.html', {
         'debts': debts,
         'total_debt': total_debt,
+        'total_interest': total_interest,
+        'gross_amount': gross_amount,
         'total_paid': 0,
         'total_remaining': 0,
         'module': module,

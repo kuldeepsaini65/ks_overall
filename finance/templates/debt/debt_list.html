@@ -25,7 +25,10 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <p class="text-muted mb-1">Total Debt</p>
-            <h3 class="mb-0">₹ {{ total_debt|floatformat:2|intcomma }}</h3>
+            <h3 class="mb-0">₹ {{ gross_amount|floatformat:2|intcomma }}</h3>
+
+            
+            <h6 class="mb-0 px-1 text-danger">₹ {{ total_debt|floatformat:2|intcomma }} + ₹ {{ total_interest|floatformat:2|intcomma }} <span class='text-primary'></span></h6>
           </div>
           <div class="icon-circle bg-warning">
             <i class="bi bi-bank"></i>
@@ -92,25 +95,25 @@
 
             <td>
               <span class="badge bg-light text-dark border">
-                {{ d.get_debt_type_display }}
+                {{ d.debt_type|capfirst }}
               </span>
             </td>
 
             <td>₹ {{ d.emi_amount|floatformat:2|intcomma }}</td>
 
             <td class="text-success fw-semibold">
-              ₹ {{ d.total_amount_paid|floatformat:2|intcomma }}
+              ₹ {{ d.net_paid|floatformat:2|intcomma }}
             </td>
 
             <td class="text-danger fw-semibold">
               ₹ 
-              {{ d.remaining_net_amount|floatformat:2|intcomma  }}
+              {{ d.net_remaining|floatformat:2|intcomma  }}
               {% comment %} {{ d.emi_amount|mul:d.emi_left }} {% endcomment %}
             </td>
 
             <td class="text-danger fw-semibold">
               ₹ 
-              {{ d.estimated_total_payable|floatformat:2|intcomma  }}
+              {{ d.gross_amount|floatformat:2|intcomma  }}
             </td>
 
 

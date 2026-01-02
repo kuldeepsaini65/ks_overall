@@ -67,106 +67,6 @@ DEBT_TYPE_OPTIONS = (
 )
 
 
-# class Debt(LogFolder):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-#     name = models.CharField(max_length=100)
-
-#     debt_type = models.CharField(max_length=30, choices=DEBT_TYPE_OPTIONS)
-
-#     lender = models.CharField(max_length=100, blank=True, null=True)
-
-#     principal_amount = models.DecimalField(max_digits=12, decimal_places=2)
-
-#     interest_rate = models.DecimalField(
-#         max_digits=5, decimal_places=2,
-#         help_text="Annual interest rate (%)",
-#         null=True, blank=True
-#     )
-
-#     tenure_months = models.PositiveIntegerField()
-
-#     emi_amount = models.DecimalField(max_digits=10, decimal_places=2)
-
-#     start_date = models.DateField()
-
-#     # For Already Paid EMI's 
-#     emi_already_paid = models.PositiveIntegerField(default=0)
-
-#     amount_already_paid = models.DecimalField(
-#         max_digits=12, decimal_places=2, default=0
-#     )
-
-#     is_active = models.BooleanField(default=True)
-
-
-#     @property
-#     def amount_paid(self):
-#         return (
-#             self.expense_debt
-#             .filter(expense_type='debt_payment')
-#             .aggregate(total=Sum('amount'))['total'] or 0
-#         )
-    
-#     @property
-#     def amount_remaining(self):
-#         return self.principal_amount - self.amount_paid
-
-
-
-#     @property
-#     def emi_left(self):
-#         return max(self.tenure_months - self.emi_already_paid, 0)
-
-#     @property
-#     def estimated_total_payable(self):
-#         """
-#         Estimated total payable using simple interest.
-#         This is an approximation, not bank-grade amortization.
-#         """
-#         if not self.interest_rate:
-#             return None
-
-#         years = self.tenure_months / 12
-#         interest = (
-#             self.principal_amount *
-#             (self.interest_rate / 100) *
-#             years
-#         )
-#         return self.principal_amount + interest
-
-
-#     def clean(self):
-#         # Basic validations
-#         if self.emi_already_paid > self.tenure_months:
-#             raise ValidationError({
-#                 'emi_already_paid': 'Paid EMIs cannot exceed total tenure.'
-#             })
-
-#         if self.emi_amount < 0:
-#             raise ValidationError({
-#                 'emi_amount': 'EMI amount cannot be negative.'
-#             })
-
-#         # 🔥 AUTO-CALCULATE already paid amount
-#         if self.emi_already_paid and self.emi_amount:
-#             self.amount_already_paid = (
-#                 self.emi_already_paid * self.emi_amount
-#             )
-
-#         if self.emi_already_paid > self.tenure_months:
-#             raise ValidationError({
-#                 'emi_already_paid': 'Paid EMIs cannot exceed total tenure.'
-#             })
-
-        
-#     def save(self, *args, **kwargs):
-#         self.full_clean()   # calls clean()
-#         super().save(*args, **kwargs)
-
-
-
-
 class Debt(LogFolder):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -191,7 +91,7 @@ class Debt(LogFolder):
     interest_rate = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        help_text="Annual interest rate (%)",
+        help_text="Monthly interest rate (%)",
         null=True,
         blank=True
     )
@@ -253,80 +153,99 @@ class Debt(LogFolder):
     # 🔹 DERIVED / CALCULATED PROPERTIES (SOURCE OF TRUTH = Expense)
     # ------------------------------------------------------------------
 
+
     @property
     def expense_paid_amount(self):
-        return (
+        """
+        Total amount paid via app (Expense table)
+        """
+        total = (
             self.expense_debt
             .filter(category__slug='debt')
-            .aggregate(total=Sum('amount'))['total'] or 0
+            .aggregate(total=Sum('amount'))['total']
+            or Decimal('0.00')
         )
 
+        return total.quantize(
+            Decimal('0.01'),
+            rounding=ROUND_HALF_UP
+        )
+    
     @property
-    def expense_emi_count(self):
-        return self.expense_debt.filter(
-            category__slug='debt'
-        ).count()
-
+    def debt_status_tag(self):
+        opening_emi = self.emi_already_paid
+        expense_emi = self.expense_debt.filter(category__slug='debt').count()
+        total_paid_emi = opening_emi + expense_emi
+        if total_paid_emi < self.tenure_months:
+            tag = 'Closed'
+        elif total_paid_emi >= self.tenure_months:
+            tag = 'Active'
+        return tag
+    
     @property
-    def total_amount_paid(self):
-        """
-        Opening paid amount + app-recorded payments
-        """
-        return self.amount_already_paid + self.expense_paid_amount
+    def badge_status(self):
+        return 'bg-success p-2' if self.debt_status_tag == 'active' else 'bg-success p-2'
 
-    @property
-    def total_emi_paid(self):
-        """
-        Opening EMI count + app-recorded EMI payments
-        """
-        return self.emi_already_paid + self.expense_emi_count
-
+    
     @property
     def emi_left(self):
-        return max(self.tenure_months - self.total_emi_paid, 0)
+        opening_emi = self.emi_already_paid
+        expense_emi = self.expense_debt.filter(category__slug='debt').count()
+        total_paid_emi = opening_emi + expense_emi
+        total_pending_emi = self.tenure_months - total_paid_emi
+        return total_pending_emi
 
     @property
-    def remaining_principal(self):
-        return max(self.principal_amount - self.total_amount_paid, 0)
+    def monthly_interest(self):
+        if not self.interest_rate:
+            return Decimal('0.00')
+
+        interest = (
+            self.principal_amount *
+            (self.interest_rate / Decimal('100'))
+        )
+        return interest.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    
+    @property
+    def total_interest(self):
+        return (
+            self.monthly_interest *
+            Decimal(self.tenure_months)
+        ).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    
+    @property
+    def gross_amount(self):
+        """
+        Principal + total interest
+        """
+        total = self.principal_amount + self.total_interest
+        return total.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
     
 
     @property
-    def remaining_net_amount(self):
+    def net_paid(self):
         """
-        Total payable (principal + interest) minus total paid amount
+        Total amount already paid (opening + app payments)
         """
-        total_payable = self.estimated_total_payable
+        total = self.amount_already_paid + self.expense_paid_amount
+        return total.quantize(
+            Decimal('0.01'), rounding=ROUND_HALF_UP
+        )
+    
 
-        if total_payable is None:
-            return None
-
-        remaining = total_payable - self.total_amount_paid
+    @property
+    def net_remaining(self):
+        """
+        Gross amount minus paid amount
+        """
+        remaining = self.gross_amount - self.net_paid
 
         return max(
             remaining.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP),
             Decimal('0.00')
         )
 
-  
-    @property
-    def estimated_total_payable(self):
-        """
-        Simple interest estimation
-        """
-        if not self.interest_rate:
-            return None
 
-        years = Decimal(self.tenure_months) / Decimal('12')
-
-        interest = (
-            self.principal_amount *
-            (self.interest_rate / Decimal('100')) *
-            years
-        )
-
-        total = self.principal_amount + interest
-
-        return total.quantize(Decimal('0.01'),rounding=ROUND_HALF_UP)
     
 
 PAYMENT_CHOICES = (

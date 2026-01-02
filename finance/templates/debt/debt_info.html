@@ -1,6 +1,9 @@
 {% extends "dashboard.html" %}
 {% load humanize %}
+{% block title %} {{debt.name}} | EverMix Tech {% endblock title %}
 {% block content %}
+
+
 
 <main class="flex-fill p-3 p-md-4">
 
@@ -29,7 +32,7 @@
       <div class="col-md-6">
         <p class="mb-2">
           <span class="text-muted">Type</span><br>
-          <strong>{{ debt.get_debt_type_display }}</strong>
+          <strong>{{ debt.debt_type }}</strong>
         </p>
 
         <p class="mb-2">
@@ -53,14 +56,18 @@
         <p class="mb-2">
           <span class="text-muted">Total Paid</span><br>
           <strong class="text-success">
-            ₹ {{ debt.total_paid|intcomma }}
+            {% comment %} ₹ {{ debt.total_paid|intcomma }} {% endcomment %}
+              ₹ {{ debt.net_paid|floatformat:2|intcomma }}
+
           </strong>
         </p>
 
         <p class="mb-2">
           <span class="text-muted">Remaining Amount</span><br>
           <strong class="text-danger">
-            ₹ {{ debt.remaining_amount|intcomma }}
+            ₹ 
+              {{ debt.net_remaining|floatformat:2|intcomma  }}
+
           </strong>
         </p>
 
@@ -71,11 +78,9 @@
 
         <p class="mb-0">
           <span class="text-muted">Status</span><br>
-          {% if debt.is_active %}
-            <span class="badge bg-success">Active</span>
-          {% else %}
-            <span class="badge bg-secondary">Closed</span>
-          {% endif %}
+         
+          <span class="badge {{debt.badge_status}}">{{debt.debt_status_tag}}</span>
+          
         </p>
       </div>
 
