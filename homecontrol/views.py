@@ -17,17 +17,15 @@ def user_login(request):
 
         if username == "" or password == "":
             messages.error(request, "Username and password are required.")
-            return render(request, 'login.html', context=context)
+            return render(request, 'login.html')
         
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect(reverse('homecontrol:dashboard'))
         else:
-            context = {
-                'error': 'Invalid username or password'
-            }
-            return render(request, 'login.html', context=context)    
+            messages.error(request, "Username and password are required.")
+            return render(request, 'login.html')    
     else:
         return render(request, 'login.html', context={})
 
@@ -41,7 +39,4 @@ def user_logout(request):
 def dashboard(request):
     context = {}
     messages.success(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
-    messages.error(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
-    messages.warning(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
-    messages.info(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
     return render(request, 'index/dashboard.html', context=context)

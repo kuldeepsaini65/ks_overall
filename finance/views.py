@@ -228,23 +228,15 @@ def expense_list(request, module):
     current_date = date.today()
     current_month_days = calendar.monthrange(current_date.year, current_date.month)[1]
 
-    # from_date = current_date.replace(current_date.year, current_date.month, 1)
-    # to_date = current_date.replace(current_date.year, current_date.month, current_month_days)
-  
     from_date = current_date.replace(day=1)
     to_date = current_date.replace(day=current_month_days)
-    
-
 
     if request.method == 'POST':
         from_date = request.POST.get('from_date')
         to_date = request.POST.get('to_date')
         expenses = expenses.filter(expense_date__lte = to_date).filter(expense_date__gte = from_date)
-
     else:
         expenses = expenses.filter(expense_date__range = [from_date, to_date])
-
-
 
     total = sum(e.amount for e in expenses)
 
