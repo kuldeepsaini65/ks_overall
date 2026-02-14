@@ -13,7 +13,7 @@ from datetime import date
 import calendar
 
 
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def expense_dashboard(request, module):
     today = now().date()
 
@@ -60,7 +60,7 @@ def expense_dashboard(request, module):
 
 
 # Category
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def category_create(request, module):
     if not request.user.is_superuser:
         messages.warning(request, 'Permission denided !!')
@@ -85,7 +85,7 @@ def category_create(request, module):
     return render(request, 'expense_category/category_form.html', context)
 
 
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def category_list(request, module):
     
     context = {}
@@ -219,7 +219,7 @@ def debt_delete(request, module, pk):
 
 # Transactions
 
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def expense_list(request, module):
     context = {}
     expenses = Expense.objects.filter(user=request.user)
@@ -250,7 +250,7 @@ def expense_list(request, module):
     return render(request, 'expenses/expense_list.html', context)
 
 
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def expense_create(request, module):
     context = {}
 
@@ -269,7 +269,7 @@ def expense_create(request, module):
     return render(request, 'expenses/expense_form.html', context)
 
 
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def expense_update(request, module, pk):
     context = {}
 
@@ -291,7 +291,7 @@ def expense_update(request, module, pk):
     return render(request, 'expenses/expense_form.html',context)
 
 
-@login_required(login_url='homecontrol:login')
+@login_required(login_url='accounts:login')
 def expense_delete(request, module, pk):
     context = {}
 
