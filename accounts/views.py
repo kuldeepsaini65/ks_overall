@@ -19,6 +19,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, f"Welcome back, {request.user.username}! You have successfully logged in.")
             return redirect(reverse('homecontrol:dashboard'))
         else:
             messages.error(request, "Username and password are required.")

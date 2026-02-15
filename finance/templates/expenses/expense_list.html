@@ -3,7 +3,7 @@
 {% block title %} Expenses | EverMix Tech {% endblock title %}
 
 {% block content %}
-<main class="flex-fill p-4">
+<main class=" p-4">
 
   <!-- Page Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -20,22 +20,24 @@
     <div class="row g-3 mb-4">
       <div class="col-md-6">
         <div class="glass p-4 metric-card">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <label for="">From</label>
-              <input type="date" name="from_date" value="{{from_date|date:'Y-m-d'}}"  class="form-control">
-            </div>
+          <div class="row g-3">
+  <div class="col-md-4">
+      <label>From</label>
+      <input type="date" name="from_date" value="{{from_date|date:'Y-m-d'}}" class="form-control">
+  </div>
 
-            <div class="">
-                <label for="">To</label>
-                <input type="date" name="to_date" value="{{to_date|date:'Y-m-d'}}" class="form-control">
-            </div>
-            <div class="">
+  <div class="col-md-4">
+      <label>To</label>
+      <input type="date" name="to_date" value="{{to_date|date:'Y-m-d'}}" class="form-control">
+  </div>
 
-                <br>
-                <button type="submit" class="btn btn-outline-primary">Filter Expense</button>
-            </div>
-          </div>
+  <div class="col-md-4 d-flex align-items-end">
+      <button type="submit" class="btn btn-outline-primary w-100">
+          Filter Expense
+      </button>
+  </div>
+</div>
+
         </div>
       </div>
   </form>
@@ -115,9 +117,11 @@
 {% endblock content %}
 
 {% block script %}
+<script>
   $(document).ready( function () {
     $('#expense_table').DataTable();
   } );
+</script>
 {% endblock script%}
 
 
